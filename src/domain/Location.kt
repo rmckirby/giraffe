@@ -1,3 +1,5 @@
+package domain
+
 class Location(val name: String, val aisle: String, val coords: Coordinates, var hasTsu: Boolean) {
 
     fun distanceBetween(location: Location): Double {
