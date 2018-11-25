@@ -4,9 +4,18 @@ import domain.Location
 import instruction.RetrieveInstruction
 
 class RetrieveService(private val retrieveInstructions: List<RetrieveInstruction>,
-                      private val locationService: LocationService) {
+                      private val locationService: LocationService,
+                      private val mode: RetrieveMode) {
 
-    fun calculateClosestRetrieveInstructionInAisle(start: Location): RetrieveInstruction? {
+    fun calculateRetrieveInstruction(startLocation: Location): RetrieveInstruction? = when(mode) {
+        RetrieveMode.CLOSEST_IN_AISLE -> calculateClosestRetrieveInstructionInAisle(startLocation)
+        RetrieveMode.CLOSEST_AVAILABLE -> calculateClosestRetrieveInstructionAvailable(startLocation)
+        RetrieveMode.HIGHEST_PRIORITY_IN_AISLE -> calculateRetrieveInstructionWithHighestPriorityInAisle(startLocation)
+        RetrieveMode.HIGHEST_PRIORITY_AVAILABLE -> calculateClosestRetrieveInstructionWithHighestPriority(startLocation)
+        RetrieveMode.HIGHEST_PRIORITY_ON_WAY_OUT -> calculateRetrieveInstructionWithHighestPriorityBehind(startLocation)
+    }
+
+    private fun calculateClosestRetrieveInstructionInAisle(start: Location): RetrieveInstruction? {
         val aisle = locationService.aisles[start.aisle] ?: throw Exception("${start.aisle} is not a valid aisle")
 
         return retrieveInstructions
@@ -16,14 +25,14 @@ class RetrieveService(private val retrieveInstructions: List<RetrieveInstruction
             .firstOrNull()
     }
 
-    fun calculateClosestRetrieveInstructionAvailable(start: Location): RetrieveInstruction? {
+    private fun calculateClosestRetrieveInstructionAvailable(start: Location): RetrieveInstruction? {
         return retrieveInstructions
             .filterNot { it.completed }
             .sortedBy { start.distanceBetween(it.from) }
             .firstOrNull()
     }
 
-    fun calculateRetrieveInstructionWithHighestPriorityInAisle(start: Location): RetrieveInstruction? {
+    private fun calculateRetrieveInstructionWithHighestPriorityInAisle(start: Location): RetrieveInstruction? {
         val aisle = locationService.aisles[start.aisle] ?: throw Exception("${start.aisle} is not a valid aisle")
 
         return retrieveInstructions
@@ -33,14 +42,14 @@ class RetrieveService(private val retrieveInstructions: List<RetrieveInstruction
             .lastOrNull()
     }
 
-    fun calculateClosestRetrieveInstructionWithHighestPriority(start: Location): RetrieveInstruction? {
+    private fun calculateClosestRetrieveInstructionWithHighestPriority(start: Location): RetrieveInstruction? {
         return retrieveInstructions
             .filterNot { it.completed }
             .sortedWith(compareBy({ it.priority }, { start.distanceBetween(it.from) }))
             .lastOrNull()
     }
 
-    fun calculateRetrieveInstructionWithHighestPriorityBehind(start: Location): RetrieveInstruction? {
+    private fun calculateRetrieveInstructionWithHighestPriorityBehind(start: Location): RetrieveInstruction? {
         val aisle = locationService.aisles[start.aisle] ?: throw Exception("${start.aisle} is not a valid aisle")
         return retrieveInstructions
             .filter { aisle.locations.contains(it.from) }
