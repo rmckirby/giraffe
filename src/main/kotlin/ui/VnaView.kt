@@ -2,6 +2,8 @@ package ui
 
 import domain.Coordinates
 import domain.Location
+import instruction.MoveInstruction
+import instruction.MoveType
 import instruction.Priority
 import instruction.RetrieveInstruction
 import instruction.StoreInstruction
@@ -17,14 +19,6 @@ import service.RetrieveMode
 import service.RetrieveService
 import service.StoreService
 import tornadofx.*
-
-enum class MoveInstructionType {
-    STORE,
-    RETRIEVE,
-    ADJUSTMENT
-}
-
-class MoveInstruction(val coordinates: Coordinates, val instructionTitle: String? = null, val instructionLocation: String? = null, val moveType: MoveInstructionType)
 
 class VnaView : View() {
 
@@ -57,12 +51,12 @@ class VnaView : View() {
             movements.add(MoveInstruction(
                 coordinates = Coordinates(pndCoords.x, location.coords.y),
                 instructionTitle = "Next - Store: ${instruction.from.name} -> ${location.name}",
-                moveType = MoveInstructionType.ADJUSTMENT))
+                moveType = MoveType.ADJUSTMENT))
             movements.add(MoveInstruction(
                 coordinates = location.coords,
-                moveType = MoveInstructionType.STORE,
+                moveType = MoveType.STORE,
                 instructionLocation = location.name))
-            movements.add(MoveInstruction(coordinates = Coordinates(pndCoords.x, location.coords.y), moveType = MoveInstructionType.ADJUSTMENT))
+            movements.add(MoveInstruction(coordinates = Coordinates(pndCoords.x, location.coords.y), moveType = MoveType.ADJUSTMENT))
 
             lastVisitedLocation = location
 
@@ -72,21 +66,21 @@ class VnaView : View() {
 
                 if (lastVisitedLocation.aisle != it.from.aisle) {
                     val otherPnd = locationService.pnds[it.from.aisle]!!.coords
-                    movements.add(MoveInstruction(coordinates = pndCoords, moveType = MoveInstructionType.ADJUSTMENT))
-                    movements.add(MoveInstruction(coordinates = otherPnd, moveType = MoveInstructionType.ADJUSTMENT))
+                    movements.add(MoveInstruction(coordinates = pndCoords, moveType = MoveType.ADJUSTMENT))
+                    movements.add(MoveInstruction(coordinates = otherPnd, moveType = MoveType.ADJUSTMENT))
                     pndCoords = otherPnd
                 }
 
                 movements.add(MoveInstruction(
                     coordinates = Coordinates(pndCoords.x, it.from.coords.y),
-                    moveType = MoveInstructionType.ADJUSTMENT,
+                    moveType = MoveType.ADJUSTMENT,
                     instructionTitle = "Next - Retrieve: ${it.from.name} -> P&D"))
                 movements.add(MoveInstruction(
                     coordinates = it.from.coords,
-                    moveType = MoveInstructionType.RETRIEVE,
+                    moveType = MoveType.RETRIEVE,
                     instructionLocation = it.from.name))
-                movements.add(MoveInstruction(coordinates = Coordinates(pndCoords.x, it.from.coords.y), moveType = MoveInstructionType.RETRIEVE))
-                movements.add(MoveInstruction(coordinates = pndCoords, moveType = MoveInstructionType.ADJUSTMENT))
+                movements.add(MoveInstruction(coordinates = Coordinates(pndCoords.x, it.from.coords.y), moveType = MoveType.RETRIEVE))
+                movements.add(MoveInstruction(coordinates = pndCoords, moveType = MoveType.ADJUSTMENT))
 
                 lastVisitedLocation = it.from
             }
@@ -98,21 +92,21 @@ class VnaView : View() {
 
                 if (lastVisitedLocation.aisle != it.from.aisle) {
                     val otherPnd = locationService.pnds[it.from.aisle]!!.coords
-                    movements.add(MoveInstruction(coordinates = pndCoords, moveType = MoveInstructionType.ADJUSTMENT))
-                    movements.add(MoveInstruction(coordinates = otherPnd, moveType = MoveInstructionType.ADJUSTMENT))
+                    movements.add(MoveInstruction(coordinates = pndCoords, moveType = MoveType.ADJUSTMENT))
+                    movements.add(MoveInstruction(coordinates = otherPnd, moveType = MoveType.ADJUSTMENT))
                     pndCoords = otherPnd
                 }
 
                 movements.add(MoveInstruction(
                     coordinates = Coordinates(pndCoords.x, it.from.coords.y),
-                    moveType = MoveInstructionType.ADJUSTMENT,
+                    moveType = MoveType.ADJUSTMENT,
                     instructionTitle = "Next - Retrieve: ${it.from.name} -> P&D"))
                 movements.add(MoveInstruction(
                     coordinates = it.from.coords,
-                    moveType = MoveInstructionType.RETRIEVE,
+                    moveType = MoveType.RETRIEVE,
                     instructionLocation = it.from.name))
-                movements.add(MoveInstruction(coordinates = Coordinates(pndCoords.x, it.from.coords.y), moveType = MoveInstructionType.RETRIEVE))
-                movements.add(MoveInstruction(coordinates = pndCoords, moveType = MoveInstructionType.ADJUSTMENT))
+                movements.add(MoveInstruction(coordinates = Coordinates(pndCoords.x, it.from.coords.y), moveType = MoveType.RETRIEVE))
+                movements.add(MoveInstruction(coordinates = pndCoords, moveType = MoveType.ADJUSTMENT))
 
                 it.completed
                 it.from.hasTsu = false
@@ -178,12 +172,23 @@ class VnaView : View() {
                 centerX = 310.0
                 centerY = 275.0
                 radius = 3.0
+            }
+
+            label("Stored TSU") {
+                layoutX = 322.0
+                layoutY = 267.0
+            }
+
+            circle {
+                centerX = 310.0
+                centerY = 295.0
+                radius = 3.0
                 fill = Color.AQUAMARINE
             }
 
             label("Driver") {
                 layoutX = 322.0
-                layoutY = 267.0
+                layoutY = 287.0
             }
 
             // The VNA Map
@@ -265,10 +270,10 @@ class VnaView : View() {
         .filter { it.id != null }
         .firstOrNull { it.id == location }
 
-    private fun getColorForMoveInstruction(moveType: MoveInstructionType): Color? =
+    private fun getColorForMoveInstruction(moveType: MoveType): Color? =
         when(moveType) {
-            MoveInstructionType.STORE -> Color.GREEN
-            MoveInstructionType.RETRIEVE -> Color.SILVER
-            MoveInstructionType.ADJUSTMENT -> null
+            MoveType.STORE -> Color.GREENYELLOW
+            MoveType.RETRIEVE -> Color.SILVER
+            MoveType.ADJUSTMENT -> null
         }
 }
