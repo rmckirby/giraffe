@@ -1,10 +1,4 @@
-import javafx.animation.Interpolator
-import javafx.animation.SequentialTransition
-import javafx.geometry.Insets
-import javafx.scene.paint.Color
-import javafx.stage.Stage
-import service.LocationService
-import tornadofx.*
+import tornadofx.launch
 import ui.Giraffe
 
 
