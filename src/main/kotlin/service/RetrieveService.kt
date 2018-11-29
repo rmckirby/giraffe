@@ -1,6 +1,7 @@
 package service
 
 import domain.Location
+import exception.AisleNotFoundException
 import instruction.RetrieveInstruction
 
 class RetrieveService(private val retrieveInstructions: List<RetrieveInstruction>,
@@ -16,7 +17,7 @@ class RetrieveService(private val retrieveInstructions: List<RetrieveInstruction
     }
 
     private fun calculateClosestRetrieveInstructionInAisle(start: Location): RetrieveInstruction? {
-        val aisle = locationService.aisles[start.aisle] ?: throw Exception("${start.aisle} is not a valid aisle")
+        val aisle = locationService.aisles[start.aisle] ?: throw AisleNotFoundException(start.aisle)
 
         return retrieveInstructions
             .filter { aisle.locations.contains(it.from) }
@@ -33,7 +34,7 @@ class RetrieveService(private val retrieveInstructions: List<RetrieveInstruction
     }
 
     private fun calculateRetrieveInstructionWithHighestPriorityInAisle(start: Location): RetrieveInstruction? {
-        val aisle = locationService.aisles[start.aisle] ?: throw Exception("${start.aisle} is not a valid aisle")
+        val aisle = locationService.aisles[start.aisle] ?: throw AisleNotFoundException(start.aisle)
 
         return retrieveInstructions
             .filter { aisle.locations.contains(it.from) }
@@ -50,7 +51,7 @@ class RetrieveService(private val retrieveInstructions: List<RetrieveInstruction
     }
 
     private fun calculateRetrieveInstructionWithHighestPriorityBehind(start: Location): RetrieveInstruction? {
-        val aisle = locationService.aisles[start.aisle] ?: throw Exception("${start.aisle} is not a valid aisle")
+        val aisle = locationService.aisles[start.aisle] ?: throw AisleNotFoundException(start.aisle)
         return retrieveInstructions
             .filter { aisle.locations.contains(it.from) }
             .filter { it.from.isBehind(start)  }

@@ -45,7 +45,7 @@ class VnaView : View() {
 
         for (instruction in storeInstructions) {
 
-            val location = storeService.calculateEmptyLocationInAisle(instruction.from)
+            val location = storeService.calculateClosestEmptyLocationInAisle(instruction.from)
             storageLocations.add(location)
 
             movements.add(MoveInstruction(
