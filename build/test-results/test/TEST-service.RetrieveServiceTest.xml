@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="service.RetrieveServiceTest" tests="1" skipped="0" failures="0" errors="0" timestamp="2018-11-29T23:55:27" hostname="UK-AL-6319.local" time="0.003">
-  <properties/>
-  <testcase name="is 1 equal to 2?" classname="service.RetrieveServiceTest" time="0.003"/>
-  <system-out><![CDATA[]]></system-out>
-  <system-err><![CDATA[]]></system-err>
-</testsuite>
