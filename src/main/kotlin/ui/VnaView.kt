@@ -2,11 +2,7 @@ package ui
 
 import domain.Coordinates
 import domain.Location
-import instruction.MoveInstruction
-import instruction.MoveType
-import instruction.Priority
-import instruction.RetrieveInstruction
-import instruction.StoreInstruction
+import instruction.*
 import javafx.animation.Animation
 import javafx.animation.Interpolator
 import javafx.animation.SequentialTransition
@@ -24,16 +20,17 @@ class VnaView : View() {
 
     private val locationService: LocationService = LocationService()
     private val movements = mutableListOf<MoveInstruction>()
-    private val MODE = RetrieveMode.CLOSEST_IN_AISLE
+    private val MODE = RetrieveMode.HIGHEST_PRIORITY_AVAILABLE
 
     private val storeInstructions = listOf(
         StoreInstruction(locationService.aisle1Locations["BULK.PND.A"]!!, "tsu-01", false),
-        StoreInstruction(locationService.aisle1Locations["BULK.PND.A"]!!, "tsu-01", false)
+        StoreInstruction(locationService.aisle1Locations["BULK.PND.A"]!!, "tsu-02", false)
     )
 
     private val retrieveInstructions = listOf(
-        RetrieveInstruction(locationService.aisle1Locations["BULK.A.25"]!!, "tsu-06", false, Priority.LOW),
-        RetrieveInstruction(locationService.aisle2Locations["BULK.B.25"]!!, "tsu-06", false, Priority.LOW)
+        RetrieveInstruction(locationService.aisle2Locations["BULK.B.58"]!!, "tsu-03", false, Priority.HIGH),
+        RetrieveInstruction(locationService.aisle1Locations["BULK.A.25"]!!, "tsu-04", false, Priority.LOW),
+        RetrieveInstruction(locationService.aisle1Locations["BULK.A.01"]!!, "tsu-05", false, Priority.NDD)
     )
 
     init {
@@ -77,7 +74,7 @@ class VnaView : View() {
                 movements.add(MoveInstruction(
                     coordinates = Coordinates(pndCoords.x, it.location.coords.y),
                     moveType = MoveType.ADJUSTMENT,
-                    instructionTitle = "Next - Retrieve: ${it.location.name} -> P&D"))
+                    instructionTitle = "Next - Retrieve: ${it.location.name} -> P&D (${it.priority})"))
                 movements.add(MoveInstruction(
                     coordinates = it.location.coords,
                     moveType = MoveType.RETRIEVE,
@@ -103,7 +100,7 @@ class VnaView : View() {
                 movements.add(MoveInstruction(
                     coordinates = Coordinates(pndCoords.x, it.location.coords.y),
                     moveType = MoveType.ADJUSTMENT,
-                    instructionTitle = "Next - Retrieve: ${it.location.name} -> P&D"))
+                    instructionTitle = "Next - Retrieve: ${it.location.name} -> P&D (${it.priority})"))
                 movements.add(MoveInstruction(
                     coordinates = it.location.coords,
                     moveType = MoveType.RETRIEVE,
@@ -175,6 +172,7 @@ class VnaView : View() {
                 centerX = 310.0
                 centerY = 275.0
                 radius = 3.0
+                fill = Color.GREENYELLOW
             }
 
             label("Stored TSU") {
@@ -233,7 +231,7 @@ class VnaView : View() {
             val arrayOfAnimations = movements.stream()
                 .map { moveInstruction ->
                     timeline(false) {
-                        keyframe(1.5.seconds) {
+                        keyframe(750.millis) {
                             moveInstruction.instructionTitle ?. let { title ->
                                 keyvalue(currentInstructionTypeLabel.textProperty(), title, Interpolator.LINEAR)
                             }
