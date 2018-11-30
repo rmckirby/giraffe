@@ -40,7 +40,7 @@ class VnaView : View() {
         var pndCoords = locationService.pnds["A"]!!.coords
 
         val storeService = StoreService(locationService)
-        val retrieveService = RetrieveService(retrieveInstructions, locationService, MODE)
+        val retrieveService = RetrieveService(locationService)
 
         val storageLocations = mutableListOf<Location>()
         lateinit var lastVisitedLocation: Location
@@ -63,29 +63,29 @@ class VnaView : View() {
 
             lastVisitedLocation = location
 
-            retrieveService.calculateRetrieveInstruction(location) ?. let {
-                it.from.hasTsu = false
+            retrieveService.calculateRetrieveInstruction(location, MODE, retrieveInstructions) ?. let {
+                it.location.hasTsu = false
                 it.completed = true
 
-                if (lastVisitedLocation.aisle != it.from.aisle) {
-                    val otherPnd = locationService.pnds[it.from.aisle]!!.coords
+                if (lastVisitedLocation.aisle != it.location.aisle) {
+                    val otherPnd = locationService.pnds[it.location.aisle]!!.coords
                     movements.add(MoveInstruction(coordinates = pndCoords, moveType = MoveType.ADJUSTMENT))
                     movements.add(MoveInstruction(coordinates = otherPnd, moveType = MoveType.ADJUSTMENT))
                     pndCoords = otherPnd
                 }
 
                 movements.add(MoveInstruction(
-                    coordinates = Coordinates(pndCoords.x, it.from.coords.y),
+                    coordinates = Coordinates(pndCoords.x, it.location.coords.y),
                     moveType = MoveType.ADJUSTMENT,
-                    instructionTitle = "Next - Retrieve: ${it.from.name} -> P&D"))
+                    instructionTitle = "Next - Retrieve: ${it.location.name} -> P&D"))
                 movements.add(MoveInstruction(
-                    coordinates = it.from.coords,
+                    coordinates = it.location.coords,
                     moveType = MoveType.RETRIEVE,
-                    instructionLocation = it.from.name))
-                movements.add(MoveInstruction(coordinates = Coordinates(pndCoords.x, it.from.coords.y), moveType = MoveType.RETRIEVE))
+                    instructionLocation = it.location.name))
+                movements.add(MoveInstruction(coordinates = Coordinates(pndCoords.x, it.location.coords.y), moveType = MoveType.RETRIEVE))
                 movements.add(MoveInstruction(coordinates = pndCoords, moveType = MoveType.ADJUSTMENT))
 
-                lastVisitedLocation = it.from
+                lastVisitedLocation = it.location
             }
         }
 
@@ -93,28 +93,28 @@ class VnaView : View() {
             .filterNot { it.completed }
             .forEach {
 
-                if (lastVisitedLocation.aisle != it.from.aisle) {
-                    val otherPnd = locationService.pnds[it.from.aisle]!!.coords
+                if (lastVisitedLocation.aisle != it.location.aisle) {
+                    val otherPnd = locationService.pnds[it.location.aisle]!!.coords
                     movements.add(MoveInstruction(coordinates = pndCoords, moveType = MoveType.ADJUSTMENT))
                     movements.add(MoveInstruction(coordinates = otherPnd, moveType = MoveType.ADJUSTMENT))
                     pndCoords = otherPnd
                 }
 
                 movements.add(MoveInstruction(
-                    coordinates = Coordinates(pndCoords.x, it.from.coords.y),
+                    coordinates = Coordinates(pndCoords.x, it.location.coords.y),
                     moveType = MoveType.ADJUSTMENT,
-                    instructionTitle = "Next - Retrieve: ${it.from.name} -> P&D"))
+                    instructionTitle = "Next - Retrieve: ${it.location.name} -> P&D"))
                 movements.add(MoveInstruction(
-                    coordinates = it.from.coords,
+                    coordinates = it.location.coords,
                     moveType = MoveType.RETRIEVE,
-                    instructionLocation = it.from.name))
-                movements.add(MoveInstruction(coordinates = Coordinates(pndCoords.x, it.from.coords.y), moveType = MoveType.RETRIEVE))
+                    instructionLocation = it.location.name))
+                movements.add(MoveInstruction(coordinates = Coordinates(pndCoords.x, it.location.coords.y), moveType = MoveType.RETRIEVE))
                 movements.add(MoveInstruction(coordinates = pndCoords, moveType = MoveType.ADJUSTMENT))
 
                 it.completed
-                it.from.hasTsu = false
+                it.location.hasTsu = false
 
-                lastVisitedLocation = it.from
+                lastVisitedLocation = it.location
             }
 
         // Hack to show in the UI that the locations we are storing are initially empty
@@ -266,7 +266,7 @@ class VnaView : View() {
         }
 
     private fun hasLocationRetrieveInstruction(location: Location): Boolean =
-        retrieveInstructions.map { it.from.name }.any { it == location.name }
+        retrieveInstructions.map { it.location.name }.any { it == location.name }
 
     private fun getLocationShape(location: String, children: List<Node>): Node? = children
         .filter { it is Circle }
