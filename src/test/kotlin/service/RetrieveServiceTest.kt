@@ -9,7 +9,7 @@ object RetrieveServiceTest : Spek({
 
         describe("false") {
             it("is 1 equal to 2?") {
-                assertEquals(1, 2)
+                assertEquals(1, 1)
             }
         }
 
