@@ -12,7 +12,15 @@ There are 5 one-in-one-out algorithms included with Giraffe:
 - `HIGHEST_PRIORITY_ON_WAY_OUT`: Retrieve the TSU with the highest priority that it is on the driver's way out. (_Under development_) 
 
 ### Demonstration
-_coming soon..._
+##### Closest Available
+![](https://media.giphy.com/media/x02KOzHSQYLaAVgxY5/giphy.gif)
+
+##### Closest in Aisle
+![](https://media.giphy.com/media/9xwLCJEpJ9v1BII0ko/giphy.gif)
+
+##### Highest Priority in Aisle
+
+##### Highest Priority Available
 
 ### Installation 
 
