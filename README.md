@@ -19,6 +19,7 @@ There are 5 one-in-one-out algorithms included with Giraffe:
 ![](https://media.giphy.com/media/9xwLCJEpJ9v1BII0ko/giphy.gif)
 
 ##### Highest Priority in Aisle
+![](https://media.giphy.com/media/3IFCk1JPDGFg6xfyiS/giphy.gif)
 
 ##### Highest Priority Available
 
