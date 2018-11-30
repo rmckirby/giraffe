@@ -27,11 +27,13 @@ class VnaView : View() {
     private val MODE = RetrieveMode.CLOSEST_IN_AISLE
 
     private val storeInstructions = listOf(
+        StoreInstruction(locationService.aisle1Locations["BULK.PND.A"]!!, "tsu-01", false),
         StoreInstruction(locationService.aisle1Locations["BULK.PND.A"]!!, "tsu-01", false)
     )
 
     private val retrieveInstructions = listOf(
-        RetrieveInstruction(locationService.aisle1Locations["BULK.A.25"]!!, "tsu-06", false, Priority.LOW)
+        RetrieveInstruction(locationService.aisle1Locations["BULK.A.25"]!!, "tsu-06", false, Priority.LOW),
+        RetrieveInstruction(locationService.aisle2Locations["BULK.B.25"]!!, "tsu-06", false, Priority.LOW)
     )
 
     init {
@@ -46,6 +48,7 @@ class VnaView : View() {
         for (instruction in storeInstructions) {
 
             val location = storeService.calculateClosestEmptyLocationInAisle(instruction.from)
+            location.hasTsu = true
             storageLocations.add(location)
 
             movements.add(MoveInstruction(

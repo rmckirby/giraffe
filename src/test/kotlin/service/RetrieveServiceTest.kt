@@ -1,16 +1,17 @@
 package service
 
-import org.junit.jupiter.api.Assertions.*
-import org.junit.jupiter.api.BeforeEach
-import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.spekframework.spek2.Spek
+import org.spekframework.spek2.style.specification.describe
 
-internal class RetrieveServiceTest {
+object RetrieveServiceTest : Spek({
+    describe("A test that will always fail") {
 
-    @BeforeEach
-    fun setUp() {}
+        describe("false") {
+            it("is 1 equal to 2?") {
+                assertEquals(1, 2)
+            }
+        }
 
-    @Test
-    fun always_fail() {
-        assertTrue(false)
     }
-}
+})
