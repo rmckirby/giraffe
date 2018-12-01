@@ -11,20 +11,35 @@ There are 5 one-in-one-out algorithms included with Giraffe:
 - `CLOSEST_AVAILABLE`: Retrieve the TSU closest to the driver.
 - `HIGHEST_PRIORITY_IN_AISLE`: Retrieve the TSU with the highest priority in the same aisle as the driver.
 - `HIGHEST_PRIORITY_AVAILABLE`: Retrieve the TSU with the highest priority within Bulk Storage. 
-- `HIGHEST_PRIORITY_ON_WAY_OUT`: Retrieve the TSU with the highest priority that it is on the driver's way out. (_Under development_) 
+- `HIGHEST_PRIORITY_ON_WAY_OUT`: Retrieve the TSU with the highest priority that it is on the driver's way out.
 
 ### Demonstration
-##### Closest Available
+
+#### Closest Available
+After storing a TSU, the algorithm will choose the closest available Retrieve instruction anywhere in Bulk Storage. 
+
 ![](https://media.giphy.com/media/x02KOzHSQYLaAVgxY5/giphy.gif)
 
-##### Closest in Aisle
+#### Closest in Aisle
+After storing a TSU, the algorithm will choose the closest available Retrieve instruction but favor the ones in the same aisle as the driver.
+
 ![](https://media.giphy.com/media/9xwLCJEpJ9v1BII0ko/giphy.gif)
 
-##### Highest Priority in Aisle
+#### Highest Priority Available
+After storing a TSU, the algorithm will choose the Retrieve instruction with the highest priority anywhere in Bulk Storage.
+
+![](https://media.giphy.com/media/35zMBNqSko71IQbwJi/giphy.gif)
+
+#### Highest Priority in Aisle
+After storing a TSU, the algorithm will choose the Retrieve instruction with the highest priority but favor the ones in the same aisle as the driver.
+
 ![](https://media.giphy.com/media/3IFCk1JPDGFg6xfyiS/giphy.gif)
 
-##### Highest Priority Available
-![](https://media.giphy.com/media/35zMBNqSko71IQbwJi/giphy.gif)
+#### Highest Priority on the way out
+In this example, the Retrieve instruction at the end of Bulk Storage is for a Next Day Delivery (NDD) which is the highest priority. Instead, the algorithm chooses the instruction closest to the P&D with the highest priority. That is because the driver will have to go to the P&D to pick up the next TSU to store.
+
+![](https://media.giphy.com/media/5vYsnbP6eFNazdTqyr/giphy.gif)
+
 
 ### Libraries
 Giraffe has been written entirely in Kotlin and uses the following dependencies: 
