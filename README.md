@@ -31,6 +31,4 @@ Giraffe has been written entirely in Kotlin and uses the following dependencies:
 - [TornadoFX](https://tornadofx.io/) for the animations,
 - [Spek](http://spekframework.org), [jUnit 5](https://junit.org/junit5/) & [mockK](https://github.com/mockk/mockk) for testing.
 
----
-
 ![](https://i.imgur.com/Ol0BpK7.jpg)
